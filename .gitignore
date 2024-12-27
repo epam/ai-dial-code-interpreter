@@ -1,0 +1,10 @@
+__pycache__
+.venv
+.env
+.history
+.idea
+.nox
+dist
+.vscode/launch.json
+.pytest_cache
+poetry.lock

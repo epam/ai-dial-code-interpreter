@@ -1,0 +1,31 @@
+IMAGE_NAME ?= ai-dial-interpreter
+
+.PHONY: all install build test clean lint format
+
+all: build
+
+install:
+	poetry install
+
+build: install
+	poetry build
+
+test:
+	@echo "No tests yet"
+
+clean:
+	poetry env remove --all
+
+lint: install
+	poetry run nox -s lint
+
+format: install
+	poetry run nox -s format
+
+help:
+	@echo "===================="
+	@echo "build                        - build the source and wheels archives"
+	@echo "clean                        - clean virtual env and build artifacts"
+	@echo "-- LINTING --"
+	@echo "format                       - run code formatters"
+	@echo "lint                         - run linters"
