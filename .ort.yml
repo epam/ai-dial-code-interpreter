@@ -10,8 +10,7 @@ excludes:
   - pattern: "test"
     reason: "TEST_DEPENDENCY_OF"
     comment: "Packages for testing only."
-resolutions:
-  rule_violations:
-    - message: ".*PyPI::packaging:24\\.2.*"
-      reason: 'CANT_FIX_EXCEPTION'
-      comment: 'Apache-2 License: https://github.com/pypa/packaging/blob/main/LICENSE'
+license_choices:
+  repository_license_choices:
+    - given: FTL OR GPL-2.0-or-later
+      choice: FTL
