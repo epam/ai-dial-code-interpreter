@@ -14,3 +14,32 @@ license_choices:
   repository_license_choices:
     - given: FTL OR GPL-2.0-or-later
       choice: FTL
+resolutions:
+  rule_violations:
+    - message: ".*PyPI::numpy:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "BSD 3-Clause license: https://github.com/numpy/numpy/blob/v2.2.1/LICENSES_bundled.txt"
+    - message: ".*PyPI::pandas:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
+    - message: ".*PyPI::jupyter-core:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
+    - message: ".*PyPI::jupyter-client:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
+    - message: ".*PyPI::prompt-toolkit:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
+    - message: ".*PyPI::traitlets:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
+    - message: ".*PyPI::matplotlib-inline:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
+    - message: ".*PyPI::ipykernel:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
+    - message: ".*PyPI::pyzmq:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
