@@ -43,6 +43,6 @@ resolutions:
     - message: ".*PyPI::pyzmq:.*"
       reason: "CANT_FIX_EXCEPTION"
       comment: "Ignore license"
-    - message: ".*PyPI::commЖ.*"
+    - message: ".*PyPI::comm:.*"
       reason: "CANT_FIX_EXCEPTION"
       comment: "Ignore license"
