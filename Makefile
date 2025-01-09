@@ -1,26 +1,35 @@
-IMAGE_NAME ?= ai-dial-interpreter
+IMAGE_NAME ?= ai-dial-code-interpreter
+VENV ?= .venv
+PYTHON_VERSION ?= 3.11
+POETRY ?= ${VENV}/bin/poetry
+POETRY_VERSION ?= 1.8.5
 
-.PHONY: all install build test clean lint format
+.PHONY: all init_env install build test clean lint format
 
 all: build
 
-install:
-	poetry install
+init_env:
+	python$(PYTHON_VERSION) -m venv ${VENV}
+	${VENV}/bin/pip install poetry==${POETRY_VERSION} --quiet
+
+install: init_env
+	${POETRY} env use python$(PYTHON_VERSION)
+	${POETRY} install
 
 build: install
-	poetry build
+	${POETRY} build
 
 test:
 	@echo "No tests yet"
 
 clean:
-	poetry env remove --all
+	${POETRY} env remove --all
 
 lint: install
-	poetry run nox -s lint
+	${POETRY} run nox -s lint
 
 format: install
-	poetry run nox -s format
+	${POETRY} run nox -s format
 
 help:
 	@echo "===================="

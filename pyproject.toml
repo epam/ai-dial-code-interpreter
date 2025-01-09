@@ -10,7 +10,7 @@ readme = "README.md"
 classifiers = [
     "Topic :: Software Development :: Libraries :: Python Modules"
 ]
-repository = "https://github.com/epam/ai-dial-interpreter"
+repository = "https://github.com/epam/ai-dial-code-interpreter"
 
 [tool.poetry.dependencies]
 python = "^3.11"

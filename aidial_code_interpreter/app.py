@@ -56,7 +56,9 @@ def upload_file(file: UploadFile):
 def download_file(request: DownloadFileRequest):
     path = resolve_path(request.path)
     if not os.path.isfile(path):
-        raise HTTPException(404, f"File not found: {os.path.relpath(path, MOUNT_FOLDER)}")
+        raise HTTPException(
+            404, f"File not found: {os.path.relpath(path, MOUNT_FOLDER)}"
+        )
 
     def read_file():
         with open(path, "rb") as stream:
@@ -77,11 +79,15 @@ def list_files(request: ListFilesRequest):
         for file in files:
             path = os.path.join(root, file)
             size = os.path.getsize(path)
-            list.append({"path": os.path.relpath(path, MOUNT_FOLDER), "size": size})
+            list.append(
+                {"path": os.path.relpath(path, MOUNT_FOLDER), "size": size}
+            )
     return {"files": list}
 
 
-def resolve_path(path: str) -> str:
+def resolve_path(path: str | None) -> str:
+    if path is None:
+        raise HTTPException(status_code=400, detail="Missing path")
     if not os.path.isabs(path):
         path = os.path.join(MOUNT_FOLDER, path)
     path = os.path.normpath(path)
