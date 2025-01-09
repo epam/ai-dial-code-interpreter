@@ -73,13 +73,13 @@ def download_file(request: DownloadFileRequest):
 
 @app.post("/list_files")
 def list_files(request: ListFilesRequest):
-    response = []
+    list = []
     for root, _, files in os.walk(MOUNT_FOLDER):
         for file in files:
             path = os.path.join(root, file)
             size = os.path.getsize(path)
-            response.append({"path": path, "size": size})
-    return response
+            list.append({"path": path, "size": size})
+    return {"files": list}
 
 
 def resolve_file(file):
