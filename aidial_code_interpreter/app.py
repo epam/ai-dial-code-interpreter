@@ -1,6 +1,5 @@
 import logging.config
 import os
-from pathlib import Path
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, UploadFile
@@ -32,11 +31,11 @@ def execute_code(request: ExecuteCodeRequest):
 
 @app.post("/upload_file")
 def upload_file(file: UploadFile):
-    path = resolve_file(file.filename)
+    path = resolve_path(file.filename)
     size = 0
 
     try:
-        path.parent.mkdir(parents=True, exist_ok=True)
+        os.makedirs(os.path.dirname(path), exist_ok=True)
         with open(path, "wb") as stream:
             while chunk := file.file.read():
                 size += len(chunk)
@@ -46,18 +45,18 @@ def upload_file(file: UploadFile):
                     )
                 stream.write(chunk)
     except Exception:
-        if path.exists():
+        if os.path.exists(path):
             os.remove(path)
         raise
 
-    return {"path": path, "size": size}
+    return {"path": os.path.relpath(path, MOUNT_FOLDER), "size": size}
 
 
 @app.post("/download_file")
 def download_file(request: DownloadFileRequest):
-    path = resolve_file(request.path)
+    path = resolve_path(request.path)
     if not os.path.isfile(path):
-        raise HTTPException(404, f"File not found: {path}")
+        raise HTTPException(404, f"File not found: {os.path.relpath(path, MOUNT_FOLDER)}")
 
     def read_file():
         with open(path, "rb") as stream:
@@ -78,17 +77,16 @@ def list_files(request: ListFilesRequest):
         for file in files:
             path = os.path.join(root, file)
             size = os.path.getsize(path)
-            list.append({"path": path, "size": size})
+            list.append({"path": os.path.relpath(path, MOUNT_FOLDER), "size": size})
     return {"files": list}
 
 
-def resolve_file(file):
-    path = Path(file)
-    if not path.is_absolute():
-        path = MOUNT_FOLDER / path
-    path = path.resolve()
-    if not path.is_relative_to(MOUNT_FOLDER):
-        raise HTTPException(status_code=400, detail=f"Bad file: {path}")
+def resolve_path(path: str) -> str:
+    if not os.path.isabs(path):
+        path = os.path.join(MOUNT_FOLDER, path)
+    path = os.path.normpath(path)
+    if not path.startswith(MOUNT_FOLDER):
+        raise HTTPException(status_code=400, detail=f"Bad path: {path}")
     return path
 
 
