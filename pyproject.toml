@@ -21,6 +21,7 @@ jupyter-client = "^8.6.3"
 python-multipart = "^0.0.20"
 pandas = "^2.2.3"
 plotly = "^5.24.1"
+matplotlib = "^3.10.0"
 
 [tool.poetry.group.dev.dependencies]
 nox = "^2023.4.22"
