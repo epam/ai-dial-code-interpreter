@@ -61,3 +61,6 @@ resolutions:
     - message: ".*PyPI::kiwisolver:.*"
       reason: "CANT_FIX_EXCEPTION"
       comment: "Ignore license"
+    - message: ".*PyPI::pillow:.*"
+      reason: "CANT_FIX_EXCEPTION"
+      comment: "Ignore license"
