@@ -19,9 +19,12 @@ fastapi = "^0.115.6"
 ipykernel = "^6.29.5"
 jupyter-client = "^8.6.3"
 python-multipart = "^0.0.20"
+numpy = "^2.2.3"
 pandas = "^2.2.3"
 plotly = "^5.24.1"
 matplotlib = "^3.10.0"
+nbformat = "^5.10.4"
+scikit-learn = "^1.6.1"
 
 [tool.poetry.group.dev.dependencies]
 nox = "^2023.4.22"
