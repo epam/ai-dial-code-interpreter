@@ -19,7 +19,7 @@ def sanitize(text):
 
 
 class Interpreter:
-    def __init__(self, timeout=5):
+    def __init__(self, timeout=60):
         self.timeout = timeout
         self.manager = None
         self.client = None
