@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "aidial-code-interpreter"
-version = "0.1.0rc"
+version = "0.1.0"
 description = "DIAL Python Code Interpreter uses Jupiter Kernel to execute code"
 authors = ["EPAM RAIL <SpecialEPM-DIALDevTeam@epam.com>"]
 homepage = "https://epam-rail.com"
