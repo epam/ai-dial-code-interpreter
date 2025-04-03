@@ -7,10 +7,10 @@ RUN pip install poetry==1.8.5
 WORKDIR /app
 
 COPY pyproject.toml poetry.toml poetry.lock README.md ./
-RUN poetry install --no-interaction --no-ansi --no-cache --no-root --no-directory --only main
+RUN poetry install --no-interaction --no-ansi --no-cache --no-root --no-directory --only main --compile
 
 COPY ./aidial_code_interpreter ./aidial_code_interpreter
-RUN poetry install --no-interaction --no-ansi --no-cache --only main
+RUN poetry install --no-interaction --no-ansi --no-cache --only main --compile
 
 FROM python:3.11-alpine as server
 
