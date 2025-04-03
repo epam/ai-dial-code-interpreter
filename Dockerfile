@@ -33,6 +33,8 @@ WORKDIR /mnt/data
 USER appuser
 EXPOSE 8080
 
+ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYDEVD_DISABLE_FILE_VALIDATION=1
+
 ENTRYPOINT ["/app/entrypoint.sh"]
 CMD uvicorn aidial_code_interpreter.app:app --app-dir /app --host 0.0.0.0 --port 8080 --timeout-keep-alive ${TIMEOUT_KEEP_ALIVE:-60}
