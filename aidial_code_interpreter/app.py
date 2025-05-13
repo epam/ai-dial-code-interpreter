@@ -24,6 +24,11 @@ interpreter = Interpreter()
 logging.getLogger("interpreter").info("Mount folder: " + MOUNT_FOLDER)
 
 
+@app.get("/health")
+def health_check():
+    return {"status": "HEALTHY"}
+
+
 @app.post("/execute_code")
 def execute_code(request: ExecuteCodeRequest):
     return interpreter.execute(request)
