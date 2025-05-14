@@ -19,8 +19,9 @@ def sanitize(text):
 
 
 class Interpreter:
-    def __init__(self, timeout=60):
-        self.timeout = timeout
+    def __init__(self, startup_timeout=10, execution_timeout=60):
+        self.startup_timeout = startup_timeout
+        self.execution_timeout = execution_timeout
         self.manager = None
         self.client = None
         self.start()
@@ -40,6 +41,7 @@ class Interpreter:
         )
         self.client = self.manager.client()
         self.client.start_channels()
+        self.client.wait_for_ready(timeout=self.startup_timeout)
 
     def stop(self):
         if self.manager is not None:
@@ -54,11 +56,11 @@ class Interpreter:
         display = []
         result = ""
 
-        LOG.info("Starting to executing code")
+        LOG.info("Starting to execute code")
 
         try:
-            deadline = time.time() + self.timeout
-            timeout = self.timeout
+            deadline = time.time() + self.execution_timeout
+            timeout = self.execution_timeout
 
             assert self.client is not None
             self.client.execute(request.code)

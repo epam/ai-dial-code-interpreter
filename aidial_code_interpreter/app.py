@@ -1,5 +1,6 @@
 import logging.config
 import os
+import threading
 
 import uvicorn
 from fastapi import FastAPI, HTTPException, UploadFile
@@ -21,6 +22,7 @@ from aidial_code_interpreter.model import (
 logging.config.dictConfig(LogConfig().model_dump())
 app = FastAPI()
 interpreter = Interpreter()
+lock = threading.Lock()
 logging.getLogger("interpreter").info("Mount folder: " + MOUNT_FOLDER)
 
 
@@ -31,7 +33,8 @@ def health_check():
 
 @app.post("/execute_code")
 def execute_code(request: ExecuteCodeRequest):
-    return interpreter.execute(request)
+    with lock:
+        return interpreter.execute(request)
 
 
 @app.post("/upload_file")
