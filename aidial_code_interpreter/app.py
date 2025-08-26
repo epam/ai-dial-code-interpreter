@@ -3,12 +3,13 @@ import os
 import threading
 
 import uvicorn
-from fastapi import FastAPI, HTTPException, UploadFile
+from fastapi import FastAPI, Header, HTTPException, UploadFile
 from starlette.responses import StreamingResponse
 
 from aidial_code_interpreter.env import (
     DOWNLOAD_CHUNK_SIZE,
     MOUNT_FOLDER,
+    SESSION_ID,
     UPLOAD_MAX_SIZE,
 )
 from aidial_code_interpreter.interpreter import Interpreter
@@ -23,7 +24,9 @@ logging.config.dictConfig(LogConfig().model_dump())
 app = FastAPI()
 interpreter = Interpreter()
 lock = threading.Lock()
-logging.getLogger("interpreter").info("Mount folder: " + MOUNT_FOLDER)
+logging.getLogger("interpreter").info(
+    "Mount folder: " + MOUNT_FOLDER + ". Session id: " + str(SESSION_ID)
+)
 
 
 @app.get("/health")
@@ -32,13 +35,17 @@ def health_check():
 
 
 @app.post("/execute_code")
-def execute_code(request: ExecuteCodeRequest):
+def execute_code(
+    request: ExecuteCodeRequest, x_dial_session_id: str = Header(None)
+):
+    check_session_id(x_dial_session_id)
     with lock:
         return interpreter.execute(request)
 
 
 @app.post("/upload_file")
-def upload_file(file: UploadFile):
+def upload_file(file: UploadFile, x_dial_session_id: str = Header(None)):
+    check_session_id(x_dial_session_id)
     path = resolve_path(file.filename)
     size = 0
 
@@ -61,7 +68,10 @@ def upload_file(file: UploadFile):
 
 
 @app.post("/download_file")
-def download_file(request: DownloadFileRequest):
+def download_file(
+    request: DownloadFileRequest, x_dial_session_id: str = Header(None)
+):
+    check_session_id(x_dial_session_id)
     path = resolve_path(request.path)
     if not os.path.isfile(path):
         raise HTTPException(
@@ -81,7 +91,10 @@ def download_file(request: DownloadFileRequest):
 
 
 @app.post("/list_files")
-def list_files(request: ListFilesRequest):
+def list_files(
+    request: ListFilesRequest, x_dial_session_id: str = Header(None)
+):
+    check_session_id(x_dial_session_id)
     list = []
     for root, _, files in os.walk(MOUNT_FOLDER):
         for file in files:
@@ -102,6 +115,18 @@ def resolve_path(path: str | None) -> str:
     if not path.startswith(MOUNT_FOLDER):
         raise HTTPException(status_code=400, detail=f"Bad path: {path}")
     return path
+
+
+def check_session_id(x_dial_session_id: str | None):
+    if SESSION_ID is not None:
+        if x_dial_session_id is None:
+            raise HTTPException(
+                status_code=400, detail="Missing x-dial-session-id header"
+            )
+        if SESSION_ID != x_dial_session_id:
+            raise HTTPException(
+                status_code=503, detail="Mismatching x-dial-session-id header"
+            )
 
 
 if __name__ == "__main__":
