@@ -1,40 +1,42 @@
-IMAGE_NAME ?= ai-dial-code-interpreter
-VENV ?= .venv
-PYTHON_VERSION ?= 3.11
-POETRY ?= ${VENV}/bin/poetry
-POETRY_VERSION ?= 1.8.5
+ARGS ?=
+POETRY ?= poetry
+POETRY_PYTHON ?= python
+VENV_DIR ?= .venv
+
+-include .env.dev
+export
 
 .PHONY: all init_env install build test clean lint format
 
 all: build
 
 init_env:
-	python$(PYTHON_VERSION) -m venv ${VENV}
-	${VENV}/bin/pip install poetry==${POETRY_VERSION} --quiet
+	$(POETRY) env use $(POETRY_PYTHON)
 
 install: init_env
-	${POETRY} env use python$(PYTHON_VERSION)
-	${POETRY} install
+	$(POETRY) install
 
 build: install
-	${POETRY} build
-
-test:
-	@echo "No tests yet"
-
-clean:
-	${POETRY} env remove --all
+	$(POETRY) build
 
 lint: install
-	${POETRY} run nox -s lint
+	$(POETRY) run nox -s lint
 
 format: install
 	${POETRY} run nox -s format
 
+test: install
+	echo "No tests yet"
+
+clean:
+	${POETRY} env remove --all
+
 help:
-	@echo "===================="
-	@echo "build                        - build the source and wheels archives"
-	@echo "clean                        - clean virtual env and build artifacts"
-	@echo "-- LINTING --"
-	@echo "format                       - run code formatters"
-	@echo "lint                         - run linters"
+	@echo '===================='
+	@echo 'build                        - build the source and wheels archives'
+	@echo 'clean                        - clean virtual env and build artifacts'
+	@echo '-- LINTING --'
+	@echo 'format                       - run code formatters'
+	@echo 'lint                         - run linters'
+	@echo '-- TESTS --'
+	@echo 'test                         - run tests'
