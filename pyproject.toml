@@ -18,7 +18,7 @@ uvicorn = "^0.34.0"
 fastapi = "^0.115.6"
 ipykernel = "^6.29.5"
 jupyter-client = "^8.6.3"
-python-multipart = "^0.0.20"
+python-multipart = ">=0.0.20,<0.0.32"
 numpy = "^2.2.3"
 pandas = {extras = ["excel", "output-formatting", "plot"], version = "^2.2.3"}
 plotly = "^6.2.0"
