@@ -11,17 +11,21 @@ RUN poetry install --no-interaction --no-ansi --no-cache --no-root --no-director
 
 COPY ./aidial_code_interpreter ./aidial_code_interpreter
 RUN poetry install --no-interaction --no-ansi --no-cache --only main --compile
+# fix CVEs in pip and setuptools (incl. vendored jaraco.context and wheel) bundled into the venv
+RUN /app/.venv/bin/python -m pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==83.0.0
 
 FROM python:3.11-alpine AS server
 
 RUN apk update && apk upgrade --no-cache libcrypto3 libssl3
+# fix CVE-2026-85091
+RUN apk upgrade --no-cache zlib
 
 # fix CVE-2023-52425
 RUN apk upgrade --no-cache libexpat
 # fix CVE-2025-6965
 RUN apk upgrade --no-cache sqlite-libs
-# fix CVE-2025-47273
-RUN pip install setuptools==78.1.1
+# fix CVE-2025-47273, CVE-2026-59890 and CVEs in pip, vendored jaraco.context and wheel
+RUN pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==83.0.0
 
 RUN adduser -u 1001 --disabled-password --gecos "" appuser
 COPY --chown=appuser --from=builder /app /app
