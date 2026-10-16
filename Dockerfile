@@ -24,8 +24,8 @@ RUN apk upgrade --no-cache zlib
 RUN apk upgrade --no-cache libexpat
 # fix CVE-2025-6965
 RUN apk upgrade --no-cache sqlite-libs
-# OpenMP runtime required by scikit-learn (import fails without libgomp.so.1)
-RUN apk add --no-cache libgomp
+# C++/OpenMP runtimes required by scikit-learn (imports fail without libgomp.so.1 / libstdc++.so.6)
+RUN apk add --no-cache libgomp libstdc++
 # fix CVE-2025-47273, CVE-2026-59890 and CVEs in pip, vendored jaraco.context and wheel
 RUN pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==83.0.0
 
