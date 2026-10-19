@@ -6,7 +6,7 @@ RUN pip install poetry==1.8.5
 
 WORKDIR /app
 
-commit this# app venv is shipped to runtime: keep pip and setuptools out of it (CVE-2025-47273,
+# app venv is shipped to runtime: keep pip and setuptools out of it (CVE-2025-47273,
 # CVE-2026-59890 and the vendored urllib3/msgpack CVEs CVE-2026-97687/97688/97689, GHSA-6v7p-g79w-8964)
 ENV VIRTUALENV_NO_PIP=1 VIRTUALENV_NO_SETUPTOOLS=1
 
