@@ -6,13 +6,14 @@ RUN pip install poetry==1.8.5
 
 WORKDIR /app
 
+# app venv is shipped to runtime: do not seed pip/setuptools into it
+ENV VIRTUALENV_NO_PIP=1 VIRTUALENV_NO_SETUPTOOLS=1
+
 COPY pyproject.toml poetry.toml poetry.lock README.md ./
 RUN poetry install --no-interaction --no-ansi --no-cache --no-root --no-directory --only main --compile
 
 COPY ./aidial_code_interpreter ./aidial_code_interpreter
 RUN poetry install --no-interaction --no-ansi --no-cache --only main --compile
-# fix CVEs in pip and setuptools (incl. vendored jaraco.context and wheel) bundled into the venv
-RUN /app/.venv/bin/python -m pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==83.0.0
 
 FROM python:3.11-alpine AS server
 
@@ -26,8 +27,8 @@ RUN apk upgrade --no-cache libexpat
 RUN apk upgrade --no-cache sqlite-libs
 # C++/OpenMP runtimes required by scikit-learn (imports fail without libgomp.so.1 / libstdc++.so.6)
 RUN apk add --no-cache libgomp libstdc++
-# fix CVE-2025-47273, CVE-2026-59890 and CVEs in pip, vendored jaraco.context and wheel
-RUN pip install --no-cache-dir --upgrade pip==26.2.1 setuptools==83.0.0
+# pip and setuptools are not needed at runtime (the service and kernel use /app/.venv, which has none)
+RUN python -m pip uninstall -y pip setuptools
 
 RUN adduser -u 1001 --disabled-password --gecos "" appuser
 COPY --chown=appuser --from=builder /app /app
