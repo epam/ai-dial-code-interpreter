@@ -16,9 +16,7 @@ RUN poetry install --no-interaction --no-ansi --no-cache --no-root --no-director
 COPY ./aidial_code_interpreter ./aidial_code_interpreter
 RUN poetry install --no-interaction --no-ansi --no-cache --only main --compile
 # fail the build if pip or setuptools end up in the app venv (they are not needed at runtime)
-RUN test ! -e /app/.venv/lib/python3.11/site-packages/pip && \
-    test ! -e /app/.venv/lib/python3.11/site-packages/setuptools && \
-    test ! -e /app/.venv/bin/pip
+RUN /app/.venv/bin/python -c "import importlib.util as u, sys; sys.exit(any(u.find_spec(m) for m in ('pip', 'setuptools')))"
 
 FROM python:3.11-alpine AS server
 
@@ -34,8 +32,10 @@ RUN apk upgrade --no-cache sqlite-libs
 RUN apk add --no-cache libgomp libstdc++
 # remove pip and setuptools from the system interpreter: clears CVE-2025-47273 and CVE-2026-59890,
 # and the vendored urllib3/msgpack copies (CVE-2026-97687/97688/97689, GHSA-6v7p-g79w-8964).
-# Not needed at runtime: the service and kernel use /app/.venv
-RUN python -m pip uninstall -y pip setuptools
+# Not needed at runtime: the service and kernel use /app/.venv.
+# ensurepip is removed too: its bundled pip/setuptools wheels would let `python -m ensurepip` restore them
+RUN python -m pip uninstall -y pip setuptools && \
+    rm -r /usr/local/lib/python3.11/ensurepip
 
 RUN adduser -u 1001 --disabled-password --gecos "" appuser
 COPY --chown=appuser --from=builder /app /app
