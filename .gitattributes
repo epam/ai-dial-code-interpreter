@@ -1,2 +1,0 @@
-# Shell scripts must keep LF endings, otherwise the shebang breaks inside Linux containers
-*.sh text eol=lf
