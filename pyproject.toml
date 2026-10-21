@@ -27,6 +27,9 @@ nbformat = "^5.10.4"
 scikit-learn = "^1.6.1"
 seaborn = "^0.13.2"
 scipy = "^1.15.2"
+# transitive via matplotlib; floor set to pick up the fixes for the Pillow
+# JPEG/TIFF/GIF/PDF decoding CVEs (CVE-2026-112403 and others)
+pillow = "^13.0.0"
 
 [tool.poetry.group.dev.dependencies]
 nox = "^2023.4.22"
