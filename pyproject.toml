@@ -15,10 +15,10 @@ repository = "https://github.com/epam/ai-dial-code-interpreter"
 [tool.poetry.dependencies]
 python = "^3.11"
 uvicorn = "^0.34.0"
-fastapi = "^0.115.6"
+fastapi = "^0.133.0"
 ipykernel = "^6.29.5"
 jupyter-client = "^8.6.3"
-python-multipart = "^0.0.20"
+python-multipart = "^0.0.31"
 numpy = "^2.2.3"
 pandas = {extras = ["excel", "output-formatting", "plot"], version = "^2.2.3"}
 plotly = "^6.2.0"

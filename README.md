@@ -73,6 +73,13 @@ curl -X POST http://0.0.0.0:8080/download_file -d '{"path":"README.md"}' -H "con
 curl -X POST http://localhost:8080/list_files -d '{}' -H "content-type: application/json"
 ```
 
+### Installing packages
+
+All dependencies are fixed at image build time from `poetry.lock`. Installing packages from code
+execution is **not supported**: `pip`, `setuptools` and `ensurepip` are not part of the runtime image, so
+`%pip install ...` and `!pip install ...` print `No module named pip` / `pip: not found` (the execution
+status stays `SUCCESS`), and `python -m venv` works only with `--without-pip`.
+
 
 ## License
 
